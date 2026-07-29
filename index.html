@@ -1,1 +1,485 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AeroCore — Aviation ERP</title>
+<style>
+:root{
+  --navy:#1E2235; --navy2:#2A2F45; --orange:#F7941E; --orangeDk:#E2740A; --orangeSoft:#FFF3E4;
+  --page:#F4F5F7; --card:#FFFFFF; --line:#E6E8EC; --text:#1E2235; --sub:#8A8F9C; --link:#2F6BFF;
+  --green:#1E9E52; --greenSoft:#E6F6EC; --red:#D64545; --redSoft:#FDE8E8; --blue:#2F6BFF; --blueSoft:#E8F0FF; --purple:#7A5AF8;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;background:var(--page);color:var(--text);display:flex;min-height:100vh}
+button{font-family:inherit;cursor:pointer}
+button:focus-visible{outline:2px solid var(--orange);outline-offset:2px}
+::-webkit-scrollbar{height:8px;width:8px}::-webkit-scrollbar-thumb{background:#D6D8DF;border-radius:8px}
+a{color:var(--link);text-decoration:none}
+
+/* Sidebar */
+.sidebar{width:238px;background:var(--navy);min-height:100vh;position:sticky;top:0;flex-shrink:0;display:flex;flex-direction:column}
+.logo{padding:22px 22px 18px;display:flex;align-items:center;gap:9px}
+.logo .mark{width:32px;height:32px;border-radius:9px;background:var(--orange);display:flex;align-items:center;justify-content:center}
+.logo span{color:#fff;font-weight:800;font-size:19px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;letter-spacing:-.5px}
+nav.side{padding:6px 12px;flex:1}
+.navbtn{width:100%;display:flex;align-items:center;gap:12px;padding:10px 12px;margin-bottom:2px;border-radius:9px;border:none;background:transparent;color:#B9BDC9;font-size:14px;font-weight:500;text-align:left}
+.navbtn:hover{background:var(--navy2);color:#fff}
+.navbtn.active{background:var(--orange);color:#fff;font-weight:700}
+.orgcard{padding:16px;margin:12px;background:var(--navy2);border-radius:10px}
+.orgcard .n{color:#fff;font-size:13px;font-weight:700}
+.orgcard .s{color:#8A8F9C;font-size:12px;margin-top:2px}
+
+/* Main */
+.main{flex:1;min-width:0}
+.topbar{height:62px;background:var(--card);border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 26px;position:sticky;top:0;z-index:30}
+.crumb{display:flex;align-items:center;gap:8px;color:var(--sub);font-size:14px}
+.crumb b{color:var(--text)}
+.searchbox{display:flex;align-items:center;gap:8px;background:var(--page);border-radius:8px;padding:8px 12px;width:260px}
+.searchbox input{border:none;background:none;outline:none;font-size:14px;font-family:inherit;width:100%}
+.topright{display:flex;align-items:center;gap:18px}
+.bell{position:relative}
+.bell .dot{position:absolute;top:-4px;right:-4px;width:16px;height:16px;border-radius:50%;background:var(--orange);color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.me{display:flex;align-items:center;gap:9px}
+.ava{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#F7941E,#E2740A);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700}
+.me .nm{font-size:13px;font-weight:700}.me .rl{font-size:11px;color:var(--sub)}
+main.content{padding:26px 30px 60px;max-width:1400px;margin:0 auto}
+
+/* Bits */
+.pagehead{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:22px}
+.pagehead h1{font-size:28px;font-weight:800}
+.pagehead p{color:var(--sub);margin-top:6px;font-size:14px}
+.row{display:flex;gap:10px}
+.btn{background:#fff;color:var(--text);border:1px solid var(--line);border-radius:8px;padding:9px 16px;font-weight:700;font-size:14px;display:inline-flex;align-items:center;gap:7px}
+.btn:hover{border-color:#C9CCD4}
+.btn.primary{background:var(--orange);color:#fff;border:none}
+.btn.primary:hover{background:var(--orangeDk)}
+.btn.ghost{background:transparent}
+.btn svg{width:15px;height:15px}
+.card{background:var(--card);border-radius:12px;border:1px solid var(--line)}
+.pad{padding:22px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+table{width:100%;border-collapse:collapse}
+th{padding:13px 18px;color:var(--sub);font-size:12px;font-weight:600;text-align:left;white-space:nowrap}
+td{padding:13px 18px;color:var(--text);font-size:14px;white-space:nowrap;border-top:1px solid var(--line)}
+tr.clickable{cursor:pointer}
+tr.clickable:hover td{background:#FAFBFC}
+.tablewrap{overflow:auto}
+.link{color:var(--link);font-weight:600}
+.b7{font-weight:700}.b6{font-weight:600}
+.pill{border-radius:20px;padding:4px 11px;font-size:12px;font-weight:700;white-space:nowrap;display:inline-block}
+.kpi{padding:20px}
+.kpi .ico{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center}
+.kpi .val{font-size:26px;font-weight:800;margin-top:14px}
+.kpi .lab{color:var(--sub);font-size:13px;margin-top:2px}
+.delta{display:flex;align-items:center;gap:3px;font-size:13px;font-weight:700}
+.minicard{padding:18px}.minicard .v{font-size:24px;font-weight:800}.minicard .l{color:var(--sub);font-size:13px;margin-top:2px}
+.tabs{display:flex;gap:4px;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:4px;width:fit-content;margin-bottom:16px}
+.tabs button{border:none;background:transparent;border-radius:7px;padding:9px 20px;font-weight:700;font-size:14px;color:var(--text)}
+.tabs button.on{background:var(--orange);color:#fff}
+.sectitle{font-weight:700;font-size:16px;margin:26px 0 12px}
+.sectitle:first-child{margin-top:0}
+
+/* chart */
+.bars{display:flex;align-items:flex-end;gap:8px;height:180px}
+.bars .col{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px}
+.bars .bar{width:100%;border-radius:5px 5px 0 0;background:var(--navy);opacity:.85}
+.bars .bar.last{background:var(--orange);opacity:1}
+.bars .m{font-size:10px;color:var(--sub)}
+.prog{height:8px;background:var(--page);border-radius:6px;overflow:hidden}
+.prog>div{height:100%}
+
+/* schedule */
+.sched{display:grid;grid-template-columns:110px repeat(7,1fr);min-width:840px}
+.sched .hcell{padding:13px 18px;color:var(--sub);font-size:12px;font-weight:600;border-bottom:1px solid var(--line)}
+.sched .hcell.day{text-align:center;border-left:1px solid var(--line)}
+.sched .tail{padding:16px 18px;font-weight:700;font-size:13px;border-bottom:1px solid var(--line);display:flex;align-items:center}
+.sched .slot{padding:6px;border-bottom:1px solid var(--line);border-left:1px solid var(--line);min-height:56px}
+.leg{border-radius:6px;padding:6px 8px;font-size:11px;font-weight:600;height:100%}
+.leg.c{background:var(--navy);color:#fff}
+.leg.e{background:var(--orangeSoft);color:var(--orange)}
+.leg .rt{display:flex;align-items:center;gap:3px}.leg .k{opacity:.75;margin-top:2px}
+
+/* alerts */
+.alert{display:flex;gap:12px;padding:12px;border-radius:8px;align-items:center}
+.alert .ai{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.alert .t{font-weight:600;font-size:14px}.alert .s{color:var(--sub);font-size:12px}
+
+/* modal */
+.overlay{position:fixed;inset:0;background:rgba(30,34,53,.55);z-index:60;display:none;align-items:center;justify-content:center;padding:20px}
+.overlay.show{display:flex}
+.modal{background:#fff;border-radius:16px;width:640px;max-width:100%;max-height:88vh;overflow:auto;padding:28px;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.modal h2{font-size:24px;font-weight:800}
+.modal .close{background:none;border:none;color:var(--sub);float:right}
+.field{margin-bottom:14px}
+.field label{display:block;font-size:13px;font-weight:600;margin-bottom:6px}
+.field input,.field select{width:100%;border:1px solid var(--line);border-radius:8px;padding:11px 12px;font-size:14px;font-family:inherit;outline:none}
+.field input:focus,.field select:focus{border-color:var(--orange)}
+.kv{display:flex;justify-content:space-between;padding:11px 0;border-top:1px solid var(--line);font-size:14px}
+.kv:first-child{border-top:none}.kv .k{color:var(--sub)}
+
+/* toast */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--navy);color:#fff;padding:13px 22px;border-radius:10px;font-size:14px;font-weight:600;z-index:80;opacity:0;transition:.3s;display:flex;align-items:center;gap:9px}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+.iconbtn{background:none;border:none;color:var(--sub);padding:4px;border-radius:6px}
+.iconbtn:hover{background:var(--page);color:var(--red)}
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="logo">
+    <div class="mark"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"/></svg></div>
+    <span>AeroCore</span>
+  </div>
+  <nav class="side" id="nav"></nav>
+  <div class="orgcard"><div class="n">Union Aviation</div><div class="s">AOC · LV-AOC-0142</div></div>
+</aside>
+
+<div class="main">
+  <div class="topbar">
+    <div class="crumb"><span>Operations</span><span>›</span><b id="crumb">Dashboard</b></div>
+    <div class="topright">
+      <div class="searchbox"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8A8F9C" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg><input placeholder="Search flights, tails, invoices…"></div>
+      <div class="bell"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8A8F9C" stroke-width="2"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg><span class="dot">3</span></div>
+      <div class="me"><div class="ava">M</div><div><div class="nm">Max Weber</div><div class="rl">Operations Admin</div></div></div>
+    </div>
+  </div>
+  <main class="content" id="content"></main>
+</div>
+
+<div class="overlay" id="overlay"><div class="modal" id="modal"></div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============ ICONS ============ */
+const I = {
+  dash:'<path d="M3 3h7v7H3zM14 3h7v7h-7zM14 14h7v7h-7zM3 14h7v7H3z"/>',
+  plane:'<path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"/>',
+  route:'<circle cx="6" cy="19" r="3"/><path d="M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15"/><circle cx="18" cy="5" r="3"/>',
+  wrench:'<path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.1 2.1-2.8-.7-.7-2.8z"/>',
+  users:'<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8"/>',
+  cal:'<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>',
+  contact:'<rect x="2" y="4" width="20" height="16" rx="2"/><path d="M9 9h.01M15 9h.01M9 13a3 3 0 0 0 6 0"/>',
+  receipt:'<path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1z"/><path d="M8 7h8M8 11h8M8 15h5"/>',
+  pkg:'<path d="M16.5 9.4 7.5 4.2M21 16V8a2 2 0 0 0-1-1.7l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.7l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="m3.3 7 8.7 5 8.7-5M12 22V12"/>',
+  shield:'<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/>',
+  chart:'<path d="M3 3v18h18"/><rect x="7" y="10" width="3" height="8"/><rect x="12" y="6" width="3" height="12"/><rect x="17" y="13" width="3" height="5"/>',
+  settings:'<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>',
+  plus:'<path d="M12 5v14M5 12h14"/>',
+  down:'<path d="M12 3v12M7 10l5 5 5-5M5 21h14"/>',
+  arrow:'<path d="M5 12h14M13 6l6 6-6 6"/>',
+  filter:'<path d="M22 3H2l8 9.5V19l4 2v-8.5z"/>',
+  dollar:'<path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>',
+  clock:'<circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>',
+  trend:'<path d="M23 6l-9.5 9.5-5-5L1 18"/><path d="M17 6h6v6"/>',
+  warn:'<path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/>',
+  up:'<path d="M7 17 17 7M7 7h10v10"/>',
+  dn:'<path d="M7 7l10 10M17 7v10H7"/>',
+  bar:'<path d="M3 3v18h18"/><rect x="7" y="10" width="3" height="8"/><rect x="12" y="6" width="3" height="12"/><rect x="17" y="13" width="3" height="5"/>',
+  dot:'<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3" fill="currentColor"/>',
+  trash:'<path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>',
+  x:'<path d="M18 6 6 18M6 6l12 12"/>'
+};
+function svg(p,s=18,color='currentColor',fill='none'){return `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="${fill}" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${p}</svg>`;}
+
+/* ============ DATA ============ */
+const STATUS={Available:['#E6F6EC','#1E9E52'],'On mission':['#FFF3E4','#F7941E'],Maintenance:['#FDE8E8','#D64545'],Active:['#E6F6EC','#1E9E52'],Invited:['#EDEFF3','#8A8F9C'],Paid:['#E6F6EC','#1E9E52'],Overdue:['#FDE8E8','#D64545'],Pending:['#FFF3E4','#F7941E'],Scheduled:['#E8F0FF','#2F6BFF'],Completed:['#EDEFF3','#8A8F9C'],Cancelled:['#FDE8E8','#D64545'],Open:['#E8F0FF','#2F6BFF'],Won:['#E6F6EC','#1E9E52'],Lost:['#FDE8E8','#D64545'],'In stock':['#E6F6EC','#1E9E52'],'Low stock':['#FFF3E4','#F7941E'],'Out of stock':['#FDE8E8','#D64545'],Valid:['#E6F6EC','#1E9E52'],'Expiring soon':['#FFF3E4','#F7941E'],Expired:['#FDE8E8','#D64545'],'On duty':['#E6F6EC','#1E9E52'],'Off duty':['#EDEFF3','#8A8F9C'],Rest:['#E8F0FF','#2F6BFF']};
+function pill(v){const c=STATUS[v]||['#EDEFF3','#8A8F9C'];return `<span class="pill" style="background:${c[0]};color:${c[1]}">${v}</span>`;}
+
+const DB={
+  fleet:[
+    {tail:'YL-ARE',model:'Embraer Legacy 600',cat:'Heavy jet',pax:13,yom:2008,base:'UUWW',hrs:'4 210',next:'C-Check · 62d',rate:'€ 5 400/h',status:'Available'},
+    {tail:'OE-FUX',model:'Cessna Citation CJ2+',cat:'Light jet',pax:6,yom:2012,base:'EDDM',hrs:'6 880',next:'100h · 9d',rate:'€ 2 100/h',status:'On mission'},
+    {tail:'D-IJET',model:'Piaggio Avanti II',cat:'Turboprop',pax:7,yom:2016,base:'LFMN',hrs:'2 940',next:'A-Check · 28d',rate:'€ 1 850/h',status:'Available'},
+    {tail:'ES-PAL',model:'Piaggio Avanti EVO',cat:'Turboprop',pax:6,yom:2019,base:'EVRA',hrs:'1 510',next:'AOG · brake',rate:'€ 1 950/h',status:'Maintenance'},
+    {tail:'N657T',model:'Cessna Citation VII',cat:'Midsize jet',pax:9,yom:2005,base:'LFMN',hrs:'9 120',next:'200h · 41d',rate:'€ 3 200/h',status:'Available'},
+    {tail:'9H-BIG',model:'Bombardier Global 6000',cat:'Ultra-long',pax:14,yom:2018,base:'LMML',hrs:'3 300',next:'C-Check · 120d',rate:'€ 7 900/h',status:'On mission'}
+  ],
+  flights:[
+    {id:'FLT-2291',tail:'OE-FUX',dep:'EDDM',arr:'LSZH',etd:'14 Jul 09:20',eta:'14 Jul 10:05',pax:4,crew:'Weber / Klein',type:'Charter',status:'Scheduled'},
+    {id:'FLT-2290',tail:'9H-BIG',dep:'LMML',arr:'OMDB',etd:'14 Jul 07:00',eta:'14 Jul 13:40',pax:11,crew:'Rossi / Haas',type:'Charter',status:'Scheduled'},
+    {id:'FLT-2288',tail:'YL-ARE',dep:'UUWW',arr:'EDDM',etd:'13 Jul 18:10',eta:'13 Jul 21:35',pax:9,crew:'Nowak / Vidal',type:'Charter',status:'Completed'},
+    {id:'FLT-2287',tail:'D-IJET',dep:'LFMN',arr:'LIRA',etd:'13 Jul 11:00',eta:'13 Jul 12:20',pax:5,crew:'Klein / Meyer',type:'Empty leg',status:'Completed'},
+    {id:'FLT-2285',tail:'N657T',dep:'LFMN',arr:'GCLP',etd:'12 Jul 08:30',eta:'12 Jul 11:50',pax:8,crew:'Vidal / Haas',type:'Charter',status:'Cancelled'}
+  ],
+  maint:[
+    {wo:'WO-4471',tail:'ES-PAL',task:'AOG — brake unit replacement',type:'Unscheduled',due:'Now',mech:'H. Bauer',est:'18 h',status:'Open'},
+    {wo:'WO-4468',tail:'OE-FUX',task:'100h inspection',type:'Scheduled',due:'9 days',mech:'H. Bauer',est:'12 h',status:'Scheduled'},
+    {wo:'WO-4460',tail:'D-IJET',task:'A-Check',type:'Scheduled',due:'28 days',mech:'M. Ford',est:'40 h',status:'Scheduled'},
+    {wo:'WO-4455',tail:'YL-ARE',task:'Avionics DB update',type:'Scheduled',due:'Completed',mech:'M. Ford',est:'3 h',status:'Completed'},
+    {wo:'WO-4451',tail:'N657T',task:'Tyre change L/H main',type:'Scheduled',due:'Completed',mech:'H. Bauer',est:'4 h',status:'Completed'}
+  ],
+  crew:[
+    {name:'Max Weber',role:'Captain',type:'Legacy 600 / CJ2',ftime:'58h / 100h',licence:'ATPL — Valid',medical:'Class 1 — 04/2027',status:'On duty'},
+    {name:'Laura Klein',role:'First Officer',type:'CJ2 / Avanti',ftime:'41h / 100h',licence:'CPL — Valid',medical:'Class 1 — 11/2026',status:'On duty'},
+    {name:'Marco Rossi',role:'Captain',type:'Global 6000',ftime:'33h / 100h',licence:'ATPL — Valid',medical:'Class 1 — 08/2026',status:'Rest'},
+    {name:'Tomasz Nowak',role:'Captain',type:'Legacy 600',ftime:'70h / 100h',licence:'ATPL — Expiring soon',medical:'Class 1 — 02/2026',status:'Off duty'},
+    {name:'Sofia Vidal',role:'First Officer',type:'Citation VII',ftime:'22h / 100h',licence:'CPL — Valid',medical:'Class 1 — 06/2027',status:'On duty'},
+    {name:'Anja Haas',role:'Cabin Crew',type:'Global / Legacy',ftime:'48h / 100h',licence:'SCCM — Valid',medical:'—',status:'Rest'}
+  ],
+  invoices:[
+    {no:'INV-2024-0188',client:'Falcon Charter Ltd',trip:'EDDM→LSZH',amount:'€ 14 500',issued:'10 Jul',due:'24 Jul',status:'Pending'},
+    {no:'INV-2024-0187',client:'BlueSky Brokers',trip:'LMML→OMDB',amount:'€ 68 200',issued:'08 Jul',due:'22 Jul',status:'Paid'},
+    {no:'INV-2024-0185',client:'Union Aviation',trip:'UUWW→EDDM',amount:'€ 21 900',issued:'01 Jul',due:'08 Jul',status:'Overdue'},
+    {no:'INV-2024-0182',client:'Riviera Jets',trip:'LFMN→GCLP',amount:'€ 25 400',issued:'28 Jun',due:'12 Jul',status:'Paid'},
+    {no:'INV-2024-0180',client:'Falcon Charter Ltd',trip:'LFMN→LIRA',amount:'€ 9 800',issued:'25 Jun',due:'09 Jul',status:'Paid'}
+  ],
+  expenses:[
+    {cat:'Fuel',vendor:'World Fuel Services',ref:'FUEL-8841',amount:'€ 42 100',date:'12 Jul'},
+    {cat:'Handling',vendor:'Signature FBO',ref:'HND-2201',amount:'€ 6 750',date:'12 Jul'},
+    {cat:'Maintenance',vendor:'Jet Aviation MRO',ref:'MRO-5590',amount:'€ 31 400',date:'10 Jul'},
+    {cat:'Catering',vendor:'DO&CO',ref:'CAT-1180',amount:'€ 2 340',date:'09 Jul'},
+    {cat:'Navigation',vendor:'Eurocontrol',ref:'NAV-7742',amount:'€ 8 900',date:'08 Jul'}
+  ],
+  leads:[
+    {client:'Falcon Charter Ltd',contact:'J. Meridian',route:'EDDM→LSZH',value:'€ 14 500',owner:'Weber',stage:'Won'},
+    {client:'Aster Group',contact:'P. Lindqvist',route:'ARN→LHR',value:'€ 22 000',owner:'Nowak',stage:'Open'},
+    {client:'Meridian Air',contact:'S. Anderson',route:'LFMN→GVA',value:'€ 11 200',owner:'Klein',stage:'Open'},
+    {client:'BlueSky Brokers',contact:'D. Hart',route:'LMML→OMDB',value:'€ 68 200',owner:'Rossi',stage:'Won'},
+    {client:'Skyline Travel',contact:'R. Okafor',route:'FCO→LTN',value:'€ 9 400',owner:'Weber',stage:'Lost'}
+  ],
+  clients:[
+    {name:'Falcon Charter Ltd',type:'Broker',country:'UK',trips:34,revenue:'€ 412K',terms:'Net 14',status:'Active'},
+    {name:'BlueSky Brokers',type:'Broker',country:'UAE',trips:18,revenue:'€ 388K',terms:'Net 7',status:'Active'},
+    {name:'Union Aviation',type:'Operator',country:'Latvia',trips:12,revenue:'€ 96K',terms:'Net 7',status:'Active'},
+    {name:'Riviera Jets',type:'Broker',country:'France',trips:21,revenue:'€ 254K',terms:'Net 14',status:'Active'},
+    {name:'Aster Group',type:'Corporate',country:'Sweden',trips:5,revenue:'€ 71K',terms:'Prepaid',status:'Active'}
+  ],
+  parts:[
+    {pn:'BRK-7788',name:'Brake assembly, main L/H',ac:'Avanti EVO',qty:1,min:2,loc:'EVRA-A3',status:'Low stock'},
+    {pn:'TYR-3321',name:'Main tyre 22×6.6',ac:'Citation VII',qty:6,min:4,loc:'LFMN-B1',status:'In stock'},
+    {pn:'FLT-1102',name:'Fuel filter element',ac:'Legacy 600',qty:0,min:3,loc:'UUWW-C2',status:'Out of stock'},
+    {pn:'OIL-4400',name:'Engine oil (case)',ac:'All',qty:22,min:10,loc:'EDDM-A1',status:'In stock'},
+    {pn:'BAT-9001',name:'Main battery NiCd',ac:'CJ2+',qty:2,min:2,loc:'EDDM-A2',status:'Low stock'}
+  ],
+  docs:[
+    {name:'AOC Certificate',ref:'LV-AOC-0142',owner:'Company',expires:'31/12/2026',status:'Valid'},
+    {name:'Insurance — Hull & Liability',ref:'POL-88231',owner:'Fleet',expires:'14/03/2026',status:'Expiring soon'},
+    {name:'CofA — YL-ARE',ref:'CA-YLARE',owner:'YL-ARE',expires:'22/09/2026',status:'Valid'},
+    {name:'CofA — ES-PAL',ref:'CA-ESPAL',owner:'ES-PAL',expires:'05/02/2026',status:'Expiring soon'},
+    {name:'Operations Manual (OM-A)',ref:'OM-A rev.14',owner:'Company',expires:'—',status:'Valid'},
+    {name:'Weather subscription',ref:'WX-2024',owner:'Company',expires:'01/01/2026',status:'Expired'}
+  ]
+};
+const REV=[42,55,48,61,58,72,69,80,76,88,84,96];
+
+/* ============ NAV ============ */
+const NAV=[['Dashboard','dash'],['Fleet','plane'],['Flight Ops','route'],['Maintenance','wrench'],['Crew','users'],['Scheduling','cal'],['Sales & CRM','contact'],['Finance','receipt'],['Inventory','pkg'],['Compliance','shield'],['Reports','chart'],['Settings','settings']];
+let current='Dashboard';
+function buildNav(){
+  document.getElementById('nav').innerHTML=NAV.map(([k,ic])=>
+    `<button class="navbtn ${k===current?'active':''}" onclick="go('${k}')">${svg(I[ic],18)} ${k}</button>`).join('');
+}
+function go(k){current=k;document.getElementById('crumb').textContent=k;buildNav();render();window.scrollTo(0,0);}
+
+/* ============ helpers to render tables ============ */
+function head(t,sub,action){return `<div class="pagehead"><div><h1>${t}</h1>${sub?`<p>${sub}</p>`:''}</div><div class="row">${action||''}</div></div>`;}
+function tbl(cols,rowsHtml){return `<div class="card tablewrap"><table><thead><tr>${cols.map(c=>`<th>${c}</th>`).join('')}</tr></thead><tbody>${rowsHtml}</tbody></table></div>`;}
+function btn(label,icon,cls,onclick){return `<button class="btn ${cls||''}" onclick="${onclick}">${icon?svg(I[icon],15):''}${label}</button>`;}
+
+/* ============ TOAST + MODAL ============ */
+let toastT;
+function toast(msg){const t=document.getElementById('toast');t.innerHTML=svg(I.dot,16,'#F7941E')+msg;t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),2600);}
+function openModal(html){document.getElementById('modal').innerHTML=html;document.getElementById('overlay').classList.add('show');}
+function closeModal(){document.getElementById('overlay').classList.remove('show');}
+document.getElementById('overlay').addEventListener('click',e=>{if(e.target.id==='overlay')closeModal();});
+
+/* ============ PAGES ============ */
+const PAGES={};
+
+PAGES['Dashboard']=()=>{
+  const kpis=[['Revenue (MTD)','€ 1.84M','+12.4%',1,'dollar','#1E9E52'],['Flight hours (MTD)','642 h','+8.1%',1,'clock','#2F6BFF'],['Fleet utilisation','73.5%','+3.2%',1,'trend','#F7941E'],['AOG events','2','-1',0,'warn','#D64545']];
+  const max=Math.max(...REV);
+  return head('Operations Dashboard','Fleet, flights and finance at a glance · updated 2 min ago',
+      btn('Export','down','ghost',"toast('Dashboard exported to PDF')")+btn('New quote','plus','primary','quoteModal()'))
+    +`<div class="grid4" style="margin-bottom:20px">`+kpis.map(k=>`<div class="card kpi">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start">
+          <div class="ico" style="background:${k[5]}1A;color:${k[5]}">${svg(I[k[4]],20)}</div>
+          <span class="delta" style="color:${k[3]?'#1E9E52':'#D64545'}">${svg(k[3]?I.up:I.dn,14)}${k[2]}</span>
+        </div><div class="val">${k[1]}</div><div class="lab">${k[0]}</div></div>`).join('')+`</div>`
+    +`<div style="display:grid;grid-template-columns:1.6fr 1fr;gap:16px;margin-bottom:20px">
+        <div class="card pad">
+          <div style="display:flex;justify-content:space-between;margin-bottom:20px"><div><div class="b7" style="font-size:16px">Revenue trend</div><div style="color:var(--sub);font-size:13px">Last 12 months (€K)</div></div></div>
+          <div class="bars">${REV.map((v,i)=>`<div class="col"><div class="bar ${i===REV.length-1?'last':''}" style="height:${v/max*160}px"></div><div class="m">${'JFMAMJJASOND'[i]}</div></div>`).join('')}</div>
+        </div>
+        <div class="card pad">
+          <div class="b7" style="font-size:16px;margin-bottom:16px">Fleet status</div>
+          ${[['Available',3,'#1E9E52'],['On mission',2,'#F7941E'],['Maintenance',1,'#D64545']].map(([l,n,c])=>`
+            <div style="margin-bottom:16px"><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px"><span>${l}</span><span class="b7">${n}/6</span></div><div class="prog"><div style="width:${n/6*100}%;background:${c}"></div></div></div>`).join('')}
+          <div style="border-top:1px solid var(--line);margin-top:8px;padding-top:16px">
+            <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:10px"><span style="color:var(--sub)">Aircraft on ground</span>${pill('Maintenance')}</div>
+            <div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:var(--sub)">Next maintenance</span><span class="b7">OE-FUX · 9 days</span></div>
+          </div>
+        </div>
+      </div>`
+    +`<div class="grid2">
+        <div><div class="b7" style="font-size:16px;margin-bottom:12px">Today's flights</div>
+          ${tbl(['Flight','Route','ETD','Status'],DB.flights.slice(0,4).map(f=>`<tr class="clickable" onclick="flightModal('${f.id}')"><td class="b7">${f.id}<div style="font-weight:400;color:var(--sub);font-size:12px">${f.tail}</div></td><td>${f.dep} ${svg(I.arrow,11,'#F7941E')} ${f.arr}</td><td>${f.etd}</td><td>${pill(f.status)}</td></tr>`).join(''))}
+        </div>
+        <div><div class="b7" style="font-size:16px;margin-bottom:12px">Alerts & compliance</div>
+          <div class="card" style="padding:8px">
+          ${[['warn','#D64545','ES-PAL AOG — brake unit','Maintenance · WO-4471'],['clock','#F7941E','Nowak licence expiring','Crew · 21 days left'],['receipt','#D64545','INV-2024-0185 overdue','Finance · € 21 900'],['shield','#F7941E','Insurance expiring soon','Compliance · 14/03/2026']].map(a=>`<div class="alert"><div class="ai" style="background:${a[1]}1A;color:${a[1]}">${svg(I[a[0]],17)}</div><div><div class="t">${a[2]}</div><div class="s">${a[3]}</div></div></div>`).join('')}
+          </div>
+        </div>
+      </div>`;
+};
+
+PAGES['Fleet']=()=>head('Fleet','6 aircraft · 73.5% utilisation',btn('Add aircraft','plus','primary','addAircraftModal()'))
+  +`<div class="row" style="margin-bottom:16px">${btn('Filter','filter','ghost',"toast('Filter applied')")}${btn('All categories ▾','','ghost',"toast('Category filter')")}${btn('All bases ▾','','ghost',"toast('Base filter')")}</div>`
+  +tbl(['Tail','Aircraft','Category','PAX','YOM','Base','Total hrs','Next maintenance','Rate','Status'],
+    DB.fleet.map(a=>`<tr class="clickable" onclick="aircraftModal('${a.tail}')"><td class="b7">${a.tail}</td><td class="link">${a.model}</td><td>${a.cat}</td><td>${a.pax}</td><td>${a.yom}</td><td>${a.base}</td><td>${a.hrs}</td><td>${a.next}</td><td class="b6">${a.rate}</td><td>${pill(a.status)}</td></tr>`).join(''));
+
+PAGES['Flight Ops']=()=>head('Flight Operations','Movements, crew assignment and flight tracking',btn('New flight','plus','primary','newFlightModal()'))
+  +tbl(['Flight','Tail','Route','ETD','ETA','PAX','Crew','Type','Status'],
+    DB.flights.map(f=>`<tr class="clickable" onclick="flightModal('${f.id}')"><td class="b7 link">${f.id}</td><td>${f.tail}</td><td>${f.dep} ${svg(I.arrow,11,'#F7941E')} ${f.arr}</td><td>${f.etd}</td><td>${f.eta}</td><td>${f.pax}</td><td>${f.crew}</td><td>${f.type}</td><td>${pill(f.status)}</td></tr>`).join(''));
+
+PAGES['Maintenance']=()=>head('Maintenance','Work orders, inspections and AOG tracking',btn('New work order','plus','primary','newWOModal()'))
+  +`<div class="grid4" style="margin-bottom:20px">${[['Open work orders','2','#F7941E'],['AOG aircraft','1','#D64545'],['Due in 30 days','3','#2F6BFF'],['Completed (MTD)','11','#1E9E52']].map(m=>`<div class="card minicard"><div class="v" style="color:${m[2]}">${m[1]}</div><div class="l">${m[0]}</div></div>`).join('')}</div>`
+  +tbl(['Work order','Tail','Task','Type','Due','Mechanic','Est.','Status'],
+    DB.maint.map(m=>`<tr class="clickable" onclick="woModal('${m.wo}')"><td class="b7 link">${m.wo}</td><td>${m.tail}</td><td>${m.task}</td><td>${m.type}</td><td class="b6" style="color:${m.due==='Now'?'#D64545':'inherit'}">${m.due}</td><td>${m.mech}</td><td>${m.est}</td><td>${pill(m.status)}</td></tr>`).join(''));
+
+PAGES['Crew']=()=>head('Crew','Flight time limitations, licences and medical currency',btn('Add crew','plus','primary','addCrewModal()'))
+  +tbl(['Name','Role','Type rating','Flight time (28d)','Licence','Medical','Status'],
+    DB.crew.map(c=>`<tr class="clickable" onclick="crewModal('${c.name}')"><td class="b7">${c.name}</td><td>${c.role}</td><td>${c.type}</td><td>${c.ftime}</td><td style="color:${c.licence.includes('Expiring')?'#F7941E':'inherit'}">${c.licence}</td><td>${c.medical}</td><td>${pill(c.status)}</td></tr>`).join(''));
+
+PAGES['Scheduling']=()=>{
+  const legs={'YL-ARE':[[1,'UUWW','EDDM','c'],[4,'EDDM','LFMN','c']],'OE-FUX':[[0,'EDDM','LSZH','e'],[2,'LSZH','EDDM','c']],'D-IJET':[[3,'LFMN','LIRA','c']],'ES-PAL':[],'N657T':[[1,'LFMN','GCLP','c'],[5,'GCLP','LFMN','e']]};
+  const days=['Mon 13','Tue 14','Wed 15','Thu 16','Fri 17','Sat 18','Sun 19'];
+  const rows=DB.fleet.slice(0,5);
+  let grid=`<div class="hcell">Aircraft</div>`+days.map(d=>`<div class="hcell day">${d}</div>`).join('');
+  rows.forEach(r=>{grid+=`<div class="tail">${r.tail}</div>`;for(let di=0;di<7;di++){const l=(legs[r.tail]||[]).find(x=>x[0]===di);grid+=`<div class="slot">${l?`<div class="leg ${l[3]}"><div class="rt">${l[1]} ${svg(I.arrow,10,l[3]==='e'?'#F7941E':'#fff')} ${l[2]}</div><div class="k">${l[3]==='e'?'Empty leg':'Charter'}</div></div>`:''}</div>`;}});
+  return head('Scheduling','Fleet availability across the week',btn('Schedule flight','plus','primary','newFlightModal()'))
+    +`<div class="card tablewrap"><div class="sched">${grid}</div></div>`;
+};
+
+PAGES['Sales & CRM']=()=>head('Sales & CRM','Quotes pipeline and client accounts',btn('New lead','plus','primary','newLeadModal()'))
+  +`<div class="grid4" style="margin-bottom:20px">${[['Pipeline value','€ 125K','#2F6BFF'],['Won (MTD)','€ 82.7K','#1E9E52'],['Win rate','64%','#F7941E'],['Open leads','2','#7A5AF8']].map(m=>`<div class="card minicard"><div class="v" style="color:${m[2]}">${m[1]}</div><div class="l">${m[0]}</div></div>`).join('')}</div>`
+  +`<div class="sectitle">Quote pipeline</div>`
+  +tbl(['Client','Contact','Route','Value','Owner','Stage'],DB.leads.map((l,i)=>`<tr class="clickable" onclick="leadModal(${i})"><td class="b7">${l.client}</td><td>${l.contact}</td><td>${l.route}</td><td class="b6">${l.value}</td><td>${l.owner}</td><td>${pill(l.stage)}</td></tr>`).join(''))
+  +`<div class="sectitle">Clients</div>`
+  +tbl(['Client','Type','Country','Trips','Revenue','Terms','Status'],DB.clients.map(c=>`<tr><td class="b7">${c.name}</td><td>${c.type}</td><td>${c.country}</td><td>${c.trips}</td><td class="b6">${c.revenue}</td><td>${c.terms}</td><td>${pill(c.status)}</td></tr>`).join(''));
+
+let financeTab='Invoices';
+PAGES['Finance']=()=>{
+  const inv=tbl(['Invoice','Client','Trip','Amount','Issued','Due','Status'],DB.invoices.map(v=>`<tr class="clickable" onclick="invoiceModal('${v.no}')"><td class="b7 link">${v.no}</td><td>${v.client}</td><td>${v.trip}</td><td class="b6">${v.amount}</td><td>${v.issued}</td><td>${v.due}</td><td>${pill(v.status)}</td></tr>`).join(''));
+  const exp=tbl(['Category','Vendor','Reference','Amount','Date'],DB.expenses.map(e=>`<tr><td class="b7">${e.cat}</td><td>${e.vendor}</td><td>${e.ref}</td><td class="b6">${e.amount}</td><td>${e.date}</td></tr>`).join(''));
+  return head('Finance','Invoicing, expenses and profitability',btn('Create invoice','plus','primary','createInvoiceModal()'))
+    +`<div class="grid4" style="margin-bottom:20px">${[['Revenue (MTD)','€ 1.84M','#1E9E52'],['Outstanding','€ 36.4K','#F7941E'],['Overdue','€ 21.9K','#D64545'],['Expenses (MTD)','€ 91.5K','#2F6BFF']].map(m=>`<div class="card minicard"><div class="v" style="color:${m[2]}">${m[1]}</div><div class="l">${m[0]}</div></div>`).join('')}</div>`
+    +`<div class="tabs">${['Invoices','Expenses'].map(t=>`<button class="${financeTab===t?'on':''}" onclick="financeTab='${t}';render()">${t}</button>`).join('')}</div>`
+    +(financeTab==='Invoices'?inv:exp);
+};
+
+PAGES['Inventory']=()=>head('Inventory','Parts, consumables and stock levels',btn('Add part','plus','primary','addPartModal()'))
+  +tbl(['Part No.','Description','Aircraft','On hand','Min','Location','Status'],DB.parts.map(p=>`<tr class="clickable" onclick="partModal('${p.pn}')"><td class="b7 link">${p.pn}</td><td>${p.name}</td><td>${p.ac}</td><td class="b7" style="color:${p.qty===0?'#D64545':'inherit'}">${p.qty}</td><td>${p.min}</td><td>${p.loc}</td><td>${pill(p.status)}</td></tr>`).join(''));
+
+PAGES['Compliance']=()=>head('Compliance','Certificates, insurance and document currency',btn('Upload document','plus','primary','uploadDocModal()'))
+  +tbl(['Document','Reference','Applies to','Expires','Status'],DB.docs.map(d=>`<tr class="clickable" onclick="docModal('${d.ref}')"><td class="b7">${d.name}</td><td>${d.ref}</td><td>${d.owner}</td><td>${d.expires}</td><td>${pill(d.status)}</td></tr>`).join(''));
+
+PAGES['Reports']=()=>{
+  const rows=[['Fleet utilisation report','Operations','Monthly','12 Jul 2024'],['Profit & loss by aircraft','Finance','Monthly','10 Jul 2024'],['Crew duty & FTL summary','Crew','Weekly','13 Jul 2024'],['Maintenance cost analysis','Maintenance','Quarterly','01 Jul 2024'],['Sales pipeline forecast','Sales','Weekly','13 Jul 2024'],['Fuel burn by route','Operations','Monthly','11 Jul 2024']];
+  return head('Reports','Generate and export operational reports',btn('Export all','down','primary',"toast('All reports exported')"))
+    +`<div class="grid2">${rows.map(r=>`<div class="card" style="padding:20px;display:flex;justify-content:space-between;align-items:center"><div style="display:flex;gap:14px;align-items:center"><div style="width:42px;height:42px;border-radius:10px;background:var(--orangeSoft);color:var(--orange);display:flex;align-items:center;justify-content:center">${svg(I.bar,20)}</div><div><div class="b7" style="font-size:15px">${r[0]}</div><div style="color:var(--sub);font-size:13px">${r[1]} · ${r[2]} · last run ${r[3]}</div></div></div>${btn('Run','down','ghost',`toast('Running: ${r[0]}')`)}</div>`).join('')}</div>`;
+};
+
+PAGES['Settings']=()=>head('Settings','Company profile, integrations and users')
+  +`<div class="grid2">
+      <div class="card pad"><div class="b7" style="font-size:16px;margin-bottom:16px">Company profile</div>
+        ${[['Legal name','Union Aviation SIA'],['AOC number','LV-AOC-0142'],['Home base','UUWW · Moscow Vnukovo'],['Fleet size','6 aircraft'],['Currency','EUR (€)'],['Plan','Enterprise']].map(kv=>`<div class="kv"><span class="k">${kv[0]}</span><span class="b6">${kv[1]}</span></div>`).join('')}
+        <div style="margin-top:16px">${btn('Edit profile','','ghost',"toast('Profile editor opened')")}</div>
+      </div>
+      <div class="card pad"><div class="b7" style="font-size:16px;margin-bottom:16px">Integrations</div>
+        ${[['FMS / Leon','Connected','#1E9E52'],['Accounting / Xero','Connected','#1E9E52'],['Weather / ForeFlight','Connected','#1E9E52'],['WhatsApp Business','Not connected','#8A8F9C']].map(x=>`<div class="kv"><span class="b6">${x[0]}</span><span style="display:flex;align-items:center;gap:6px;color:${x[2]};font-size:13px;font-weight:700">${svg(I.dot,12,x[2])}${x[1]}${x[1]==='Not connected'?` <button class="btn" style="padding:4px 10px;margin-left:8px" onclick="toast('Connecting…')">Connect</button>`:''}</span></div>`).join('')}
+      </div>
+    </div>`;
+
+/* ============ MODALS ============ */
+function modalShell(title,body,footer){return `<button class="close" onclick="closeModal()">${svg(I.x,22,'#8A8F9C')}</button><h2>${title}</h2><div style="clear:both;margin-top:18px">${body}</div>${footer?`<div style="margin-top:22px;display:flex;gap:10px;justify-content:flex-end">${footer}</div>`:''}`;}
+
+/* detail modals */
+function aircraftModal(t){const a=DB.fleet.find(x=>x.tail===t);openModal(modalShell(`${a.tail} <span style="color:var(--orange);font-size:17px">${a.model}</span>`,
+  `${[['Category',a.cat],['Passengers',a.pax],['Year of manufacture',a.yom],['Home base',a.base],['Total airframe hours',a.hrs],['Next maintenance',a.next],['Hourly rate',a.rate]].map(kv=>`<div class="kv"><span class="k">${kv[0]}</span><span class="b6">${kv[1]}</span></div>`).join('')}<div class="kv"><span class="k">Status</span>${pill(a.status)}</div>`,
+  btn('Close','','ghost','closeModal()')+btn('Edit aircraft','','primary',`closeModal();toast('${a.tail} — edit form')`)));}
+function flightModal(id){const f=DB.flights.find(x=>x.id===id);openModal(modalShell(`${f.id} <span style="color:var(--orange);font-size:17px">${f.dep} → ${f.arr}</span>`,
+  `${[['Aircraft',f.tail],['Departure',f.dep+' · '+f.etd],['Arrival',f.arr+' · '+f.eta],['Passengers',f.pax],['Crew',f.crew],['Type',f.type]].map(kv=>`<div class="kv"><span class="k">${kv[0]}</span><span class="b6">${kv[1]}</span></div>`).join('')}<div class="kv"><span class="k">Status</span>${pill(f.status)}</div>`,
+  btn('Close','','ghost','closeModal()')+btn('Flight brief','down','primary',`closeModal();toast('${f.id} brief generated')`)));}
+function woModal(wo){const m=DB.maint.find(x=>x.wo===wo);openModal(modalShell(`${m.wo}`,
+  `${[['Aircraft',m.tail],['Task',m.task],['Type',m.type],['Due',m.due],['Mechanic',m.mech],['Estimated',m.est]].map(kv=>`<div class="kv"><span class="k">${kv[0]}</span><span class="b6">${kv[1]}</span></div>`).join('')}<div class="kv"><span class="k">Status</span>${pill(m.status)}</div>`,
+  btn('Close','','ghost','closeModal()')+btn('Mark complete','','primary',`completeWO('${m.wo}')`)));}
+function crewModal(n){const c=DB.crew.find(x=>x.name===n);openModal(modalShell(n,
+  `${[['Role',c.role],['Type rating',c.type],['Flight time (28d)',c.ftime],['Licence',c.licence],['Medical',c.medical]].map(kv=>`<div class="kv"><span class="k">${kv[0]}</span><span class="b6">${kv[1]}</span></div>`).join('')}<div class="kv"><span class="k">Status</span>${pill(c.status)}</div>`,
+  btn('Close','','ghost','closeModal()')+btn('Roster','cal','primary',`closeModal();toast('${n} roster opened')`)));}
+function leadModal(i){const l=DB.leads[i];openModal(modalShell(`${l.client}`,
+  `${[['Contact',l.contact],['Route',l.route],['Value',l.value],['Owner',l.owner]].map(kv=>`<div class="kv"><span class="k">${kv[0]}</span><span class="b6">${kv[1]}</span></div>`).join('')}<div class="kv"><span class="k">Stage</span>${pill(l.stage)}</div>`,
+  btn('Mark lost','','ghost',`setLead(${i},'Lost')`)+btn('Mark won','','primary',`setLead(${i},'Won')`)));}
+function invoiceModal(no){const v=DB.invoices.find(x=>x.no===no);openModal(modalShell(`${v.no}`,
+  `${[['Client',v.client],['Trip',v.trip],['Amount',v.amount],['Issued',v.issued],['Due',v.due]].map(kv=>`<div class="kv"><span class="k">${kv[0]}</span><span class="b6">${kv[1]}</span></div>`).join('')}<div class="kv"><span class="k">Status</span>${pill(v.status)}</div>`,
+  btn('Download PDF','down','ghost',`closeModal();toast('${v.no} downloaded')`)+(v.status!=='Paid'?btn('Mark paid','','primary',`payInvoice('${v.no}')`):btn('Close','','primary','closeModal()'))));}
+function partModal(pn){const p=DB.parts.find(x=>x.pn===pn);openModal(modalShell(`${p.pn}`,
+  `${[['Description',p.name],['Aircraft',p.ac],['On hand',p.qty],['Minimum',p.min],['Location',p.loc]].map(kv=>`<div class="kv"><span class="k">${kv[0]}</span><span class="b6">${kv[1]}</span></div>`).join('')}<div class="kv"><span class="k">Status</span>${pill(p.status)}</div>`,
+  btn('Close','','ghost','closeModal()')+btn('Reorder','plus','primary',`closeModal();toast('${p.pn} reorder placed')`)));}
+function docModal(ref){const d=DB.docs.find(x=>x.ref===ref);openModal(modalShell(`${d.name}`,
+  `${[['Reference',d.ref],['Applies to',d.owner],['Expires',d.expires]].map(kv=>`<div class="kv"><span class="k">${kv[0]}</span><span class="b6">${kv[1]}</span></div>`).join('')}<div class="kv"><span class="k">Status</span>${pill(d.status)}</div>`,
+  btn('Close','','ghost','closeModal()')+btn('Renew','','primary',`closeModal();toast('${d.name} renewal started')`)));}
+
+/* create/add modals with working forms */
+function formField(label,id,type='text',opts){return `<div class="field"><label>${label}</label>${opts?`<select id="${id}">${opts.map(o=>`<option>${o}</option>`).join('')}</select>`:`<input id="${id}" type="${type}" placeholder="${label}">`}</div>`;}
+
+function addAircraftModal(){openModal(modalShell('Add aircraft',
+  formField('Tail number','f_tail')+formField('Model','f_model')+formField('Category','f_cat',null,['Turboprop','Light jet','Midsize jet','Super midsize','Heavy jet','Ultra-long'])+formField('Passengers','f_pax','number')+formField('Home base','f_base'),
+  btn('Cancel','','ghost','closeModal()')+btn('Add aircraft','plus','primary','saveAircraft()')));}
+function saveAircraft(){const t=val('f_tail')||'NEW-'+Math.floor(Math.random()*900+100);DB.fleet.push({tail:t,model:val('f_model')||'New aircraft',cat:val('f_cat'),pax:val('f_pax')||6,yom:2024,base:val('f_base')||'—',hrs:'0',next:'—',rate:'€ —/h',status:'Available'});closeModal();render();toast(t+' added to fleet');}
+
+function newFlightModal(){openModal(modalShell('New flight',
+  formField('Aircraft','f_ac',null,DB.fleet.map(f=>f.tail))+formField('Departure (ICAO)','f_dep')+formField('Arrival (ICAO)','f_arr')+formField('ETD','f_etd')+formField('Passengers','f_pax','number')+formField('Type','f_type',null,['Charter','Empty leg','Positioning']),
+  btn('Cancel','','ghost','closeModal()')+btn('Create flight','plus','primary','saveFlight()')));}
+function saveFlight(){const id='FLT-'+Math.floor(Math.random()*9000+2000);DB.flights.unshift({id,tail:val('f_ac'),dep:val('f_dep')||'—',arr:val('f_arr')||'—',etd:val('f_etd')||'TBD',eta:'TBD',pax:val('f_pax')||1,crew:'Unassigned',type:val('f_type'),status:'Scheduled'});closeModal();render();toast(id+' scheduled');}
+
+function newWOModal(){openModal(modalShell('New work order',
+  formField('Aircraft','f_ac',null,DB.fleet.map(f=>f.tail))+formField('Task','f_task')+formField('Type','f_type',null,['Scheduled','Unscheduled'])+formField('Mechanic','f_mech')+formField('Estimated hours','f_est'),
+  btn('Cancel','','ghost','closeModal()')+btn('Create WO','plus','primary','saveWO()')));}
+function saveWO(){const wo='WO-'+Math.floor(Math.random()*9000+1000);DB.maint.unshift({wo,tail:val('f_ac'),task:val('f_task')||'New task',type:val('f_type'),due:'Pending',mech:val('f_mech')||'Unassigned',est:(val('f_est')||'—')+' h',status:'Open'});closeModal();render();toast(wo+' created');}
+
+function addCrewModal(){openModal(modalShell('Add crew member',
+  formField('Name','f_name')+formField('Role','f_role',null,['Captain','First Officer','Cabin Crew'])+formField('Type rating','f_type')+formField('Licence','f_lic'),
+  btn('Cancel','','ghost','closeModal()')+btn('Add crew','plus','primary','saveCrew()')));}
+function saveCrew(){DB.crew.push({name:val('f_name')||'New crew',role:val('f_role'),type:val('f_type')||'—',ftime:'0h / 100h',licence:(val('f_lic')||'—')+' — Valid',medical:'Class 1 — —',status:'Off duty'});closeModal();render();toast('Crew member added');}
+
+function newLeadModal(){openModal(modalShell('New lead',
+  formField('Client','f_client')+formField('Contact','f_contact')+formField('Route','f_route')+formField('Value (€)','f_value')+formField('Owner','f_owner'),
+  btn('Cancel','','ghost','closeModal()')+btn('Add lead','plus','primary','saveLead()')));}
+function saveLead(){DB.leads.unshift({client:val('f_client')||'New client',contact:val('f_contact')||'—',route:val('f_route')||'—',value:'€ '+(val('f_value')||'0'),owner:val('f_owner')||'—',stage:'Open'});closeModal();render();toast('Lead added to pipeline');}
+
+function createInvoiceModal(){openModal(modalShell('Create invoice',
+  formField('Client','f_client',null,DB.clients.map(c=>c.name))+formField('Trip','f_trip')+formField('Amount (€)','f_amount')+formField('Due date','f_due'),
+  btn('Cancel','','ghost','closeModal()')+btn('Create invoice','plus','primary','saveInvoice()')));}
+function saveInvoice(){const no='INV-2024-0'+Math.floor(Math.random()*900+189);DB.invoices.unshift({no,client:val('f_client'),trip:val('f_trip')||'—',amount:'€ '+(val('f_amount')||'0'),issued:'Today',due:val('f_due')||'—',status:'Pending'});closeModal();render();toast(no+' created');}
+
+function addPartModal(){openModal(modalShell('Add part',
+  formField('Part number','f_pn')+formField('Description','f_name')+formField('Aircraft','f_ac')+formField('Quantity','f_qty','number')+formField('Min level','f_min','number')+formField('Location','f_loc'),
+  btn('Cancel','','ghost','closeModal()')+btn('Add part','plus','primary','savePart()')));}
+function savePart(){const q=parseInt(val('f_qty'))||0,mn=parseInt(val('f_min'))||1;DB.parts.push({pn:val('f_pn')||'PN-'+Math.floor(Math.random()*9000),name:val('f_name')||'New part',ac:val('f_ac')||'—',qty:q,min:mn,loc:val('f_loc')||'—',status:q===0?'Out of stock':q<=mn?'Low stock':'In stock'});closeModal();render();toast('Part added to inventory');}
+
+function uploadDocModal(){openModal(modalShell('Upload document',
+  formField('Document name','f_name')+formField('Reference','f_ref')+formField('Applies to','f_owner')+formField('Expires','f_exp'),
+  btn('Cancel','','ghost','closeModal()')+btn('Upload','down','primary','saveDoc()')));}
+function saveDoc(){DB.docs.unshift({name:val('f_name')||'New document',ref:val('f_ref')||'—',owner:val('f_owner')||'Company',expires:val('f_exp')||'—',status:'Valid'});closeModal();render();toast('Document uploaded');}
+
+function quoteModal(){openModal(modalShell('New quote',
+  formField('Client','f_client')+formField('Route','f_route')+formField('Aircraft','f_ac',null,DB.fleet.map(f=>f.tail))+formField('Price (€)','f_price'),
+  btn('Cancel','','ghost','closeModal()')+btn('Send quote','','primary',"closeModal();toast('Quote sent to client')")));}
+
+/* actions that mutate + refresh */
+function val(id){const e=document.getElementById(id);return e?e.value.trim():'';}
+function completeWO(wo){const m=DB.maint.find(x=>x.wo===wo);m.status='Completed';m.due='Completed';closeModal();render();toast(wo+' marked complete');}
+function payInvoice(no){DB.invoices.find(x=>x.no===no).status='Paid';closeModal();render();toast(no+' marked paid');}
+function setLead(i,stage){DB.leads[i].stage=stage;closeModal();render();toast('Lead marked '+stage);}
+
+/* ============ RENDER ============ */
+function render(){document.getElementById('content').innerHTML=PAGES[current]();}
+buildNav();render();
+</script>
+</body>
+</html>
